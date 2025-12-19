@@ -39,7 +39,14 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = services.GetRequiredService<Mrp.Infrastructure.Data.MrpDbContext>();
-        context.Database.Migrate();
+        if (context.Database.IsInMemory())
+        {
+            context.Database.EnsureCreated();
+        }
+        else
+        {
+            context.Database.Migrate();
+        }
     }
     catch (Exception ex)
     {

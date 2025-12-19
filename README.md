@@ -20,6 +20,33 @@ Yapay zeka destekli, modern ve yüksek performanslı Malzeme İhtiyaç Planlama 
 - `src/Mrp.Api`: ASP.NET Core Web API.
 - `frontend/`: Next.js Web Uygulaması.
 
+## Veritabanı Yapılandırması
+
+Proje varsayılan olarak **SQL Server** kullanacak şekilde yapılandırılmıştır, ancak **PostgreSQL** desteği de mevcuttur.
+
+### 1. Veritabanı Seçimi
+Veritabanı sağlayıcısını `src/Mrp.Api/appsettings.json` dosyasındaki `DatabaseProvider` ayarı ile değiştirebilirsiniz:
+
+- **SQL Server (Varsayılan):** `"DatabaseProvider": "SqlServer"`
+- **PostgreSQL:** `"DatabaseProvider": "PostgreSQL"`
+
+### 2. Bağlantı Bilgileri
+`src/Mrp.Api/appsettings.json` dosyasındaki `ConnectionStrings` bölümünü kendi sunucu bilgilerinize göre güncelleyin:
+
+**SQL Server Örneği:**
+```json
+"ConnectionStrings": {
+  "SqlServerConnection": "Server=LOCALHOST;Database=FactoryMrp;Trusted_Connection=True;TrustServerCertificate=True;"
+}
+```
+
+**PostgreSQL Örneği:**
+```json
+"ConnectionStrings": {
+  "PostgreConnection": "Host=localhost;Port=5432;Database=FactoryMrp;Username=postgres;Password=postgres"
+}
+```
+
 ## 🛠️ Kurulum (Docker ile)
 
 En kolay yöntem Docker kullanmaktır.

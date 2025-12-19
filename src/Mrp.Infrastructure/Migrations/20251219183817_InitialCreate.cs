@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -16,13 +15,13 @@ namespace Mrp.Infrastructure.Migrations
                 name: "Demands",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ItemCode = table.Column<string>(type: "text", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ItemCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DueDate = table.Column<DateOnly>(type: "date", nullable: false),
-                    Quantity = table.Column<decimal>(type: "numeric", nullable: false),
-                    Type = table.Column<int>(type: "integer", nullable: false),
-                    SourceId = table.Column<string>(type: "text", nullable: true)
+                    Quantity = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Type = table.Column<int>(type: "int", nullable: false),
+                    SourceId = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -33,15 +32,15 @@ namespace Mrp.Infrastructure.Migrations
                 name: "Items",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Code = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    Type = table.Column<int>(type: "integer", nullable: false),
-                    OnHand = table.Column<decimal>(type: "numeric", nullable: false),
-                    LeadTimeDays = table.Column<int>(type: "integer", nullable: false),
-                    MinOrderQty = table.Column<decimal>(type: "numeric", nullable: false),
-                    SafetyStock = table.Column<decimal>(type: "numeric", nullable: false),
-                    LowLevelCode = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Code = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Type = table.Column<int>(type: "int", nullable: false),
+                    OnHand = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    LeadTimeDays = table.Column<int>(type: "int", nullable: false),
+                    MinOrderQty = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    SafetyStock = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    LowLevelCode = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -52,13 +51,13 @@ namespace Mrp.Infrastructure.Migrations
                 name: "BomLines",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ParentItemCode = table.Column<string>(type: "text", nullable: false),
-                    ChildItemCode = table.Column<string>(type: "text", nullable: false),
-                    Quantity = table.Column<decimal>(type: "numeric", nullable: false),
-                    ScrapRate = table.Column<decimal>(type: "numeric", nullable: false),
-                    ItemId = table.Column<int>(type: "integer", nullable: true)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ParentItemCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ChildItemCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Quantity = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    ScrapRate = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    ItemId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
