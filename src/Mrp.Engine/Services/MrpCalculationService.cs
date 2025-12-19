@@ -13,8 +13,8 @@ public class MrpCalculationService
         // 1. Low-Level Code hesapla
         CalculateLowLevelCodes(input.Items);
         
-        // 2. Seviyeye göre sırala (düşükten yükseğe - LLC 0 önce)
-        var sortedItems = input.Items.OrderBy(i => i.LowLevelCode).ToList();
+        // 2. Seviyeye göre sırala (yüksekten düşüğe - LLC Yüksek olan önce hesaplanmalı)
+        var sortedItems = input.Items.OrderByDescending(i => i.LowLevelCode).ToList();
         
         // 3. Her seviye için MRP döngüsü
         var grossRequirements = InitializeGrossRequirements(input.Demands);

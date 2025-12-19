@@ -184,4 +184,164 @@ public class MrpCalculationServiceTests
         result.Suggestions.First().StartDate.Should().Be(expectedStartDate);
         result.Suggestions.First().EndDate.Should().Be(dueDate);
     }
+
+    // ========== FAZ 3: Çok Seviyeli MRP Testleri ==========
+
+    [Fact]
+    public void Calculate_TwoLevelBOM_ShouldExplodeToChildItems()
+    {
+        // Arrange - MAMUL → YARI MAMUL (2 adet gerekli)
+        var input = new MrpInput
+        {
+            Items = new List<Item>
+            {
+                new() 
+                { 
+                    Code = "MAMUL-001", 
+                    Type = ItemType.Finished, 
+                    OnHand = 0, 
+                    MinOrderQty = 10, 
+                    LeadTimeDays = 7,
+                    BillOfMaterials = new List<BomLine>
+                    {
+                        new() { ParentItemCode = "MAMUL-001", ChildItemCode = "YARI-001", Quantity = 2, ScrapRate = 0 }
+                    }
+                },
+                new() 
+                { 
+                    Code = "YARI-001", 
+                    Type = ItemType.SemiFinished, 
+                    OnHand = 0, 
+                    MinOrderQty = 20, 
+                    LeadTimeDays = 3 
+                }
+            },
+            Demands = new List<Demand>
+            {
+                new() { ItemCode = "MAMUL-001", Quantity = 10, DueDate = DateOnly.FromDateTime(DateTime.Today.AddDays(21)), Type = DemandType.Order, SourceId = "SIP-001" }
+            }
+        };
+
+        // Act
+        var result = _sut.Calculate(input);
+
+        // Assert - MAMUL için 10, YARI için 20 (10 x 2) öneri olmalı
+        result.Suggestions.Should().HaveCount(2);
+        
+        var mamulSuggestion = result.Suggestions.First(s => s.ItemCode == "MAMUL-001");
+        mamulSuggestion.Quantity.Should().Be(10);
+        mamulSuggestion.PeggingInfo.Should().Be("SIP-001");
+        
+        var yariSuggestion = result.Suggestions.First(s => s.ItemCode == "YARI-001");
+        yariSuggestion.Quantity.Should().Be(20); // 10 x 2
+        yariSuggestion.PeggingInfo.Should().Contain("MAMUL-001");
+    }
+
+    [Fact]
+    public void Calculate_ScrapRate_ShouldIncreaseRequiredQuantity()
+    {
+        // Arrange - %10 fire oranı ile 100 adet için 110 adet gerekir
+        var input = new MrpInput
+        {
+            Items = new List<Item>
+            {
+                new() 
+                { 
+                    Code = "MAMUL-001", 
+                    Type = ItemType.Finished, 
+                    OnHand = 0, 
+                    MinOrderQty = 10, 
+                    LeadTimeDays = 7,
+                    BillOfMaterials = new List<BomLine>
+                    {
+                        new() { ParentItemCode = "MAMUL-001", ChildItemCode = "HAMMADDE-001", Quantity = 1, ScrapRate = 0.1m }
+                    }
+                },
+                new() 
+                { 
+                    Code = "HAMMADDE-001", 
+                    Type = ItemType.RawMaterial, 
+                    OnHand = 0, 
+                    MinOrderQty = 50, 
+                    LeadTimeDays = 14 
+                }
+            },
+            Demands = new List<Demand>
+            {
+                new() { ItemCode = "MAMUL-001", Quantity = 100, DueDate = DateOnly.FromDateTime(DateTime.Today.AddDays(30)), Type = DemandType.Order }
+            }
+        };
+
+        // Act
+        var result = _sut.Calculate(input);
+
+        // Assert - 100 x 1 x 1.1 (scrap) = 110 → 150'ye yuvarlanmalı (3 x 50)
+        var hammaddeSuggestion = result.Suggestions.FirstOrDefault(s => s.ItemCode == "HAMMADDE-001");
+        hammaddeSuggestion.Should().NotBeNull();
+        hammaddeSuggestion!.Quantity.Should().Be(150); // 110 → 150 (3 x 50)
+        hammaddeSuggestion.Action.Should().Be(ActionType.Buy);
+    }
+
+    [Fact]
+    public void Calculate_ThreeLevelBOM_ShouldCascadeCorrectly()
+    {
+        // Arrange - MAMUL → YARI → HAMMADDE
+        var input = new MrpInput
+        {
+            Items = new List<Item>
+            {
+                new() 
+                { 
+                    Code = "MAMUL-001", 
+                    Type = ItemType.Finished, 
+                    OnHand = 0, 
+                    MinOrderQty = 10, 
+                    LeadTimeDays = 5,
+                    BillOfMaterials = new List<BomLine>
+                    {
+                        new() { ParentItemCode = "MAMUL-001", ChildItemCode = "YARI-001", Quantity = 2, ScrapRate = 0 }
+                    }
+                },
+                new() 
+                { 
+                    Code = "YARI-001", 
+                    Type = ItemType.SemiFinished, 
+                    OnHand = 0, 
+                    MinOrderQty = 10, 
+                    LeadTimeDays = 3,
+                    BillOfMaterials = new List<BomLine>
+                    {
+                        new() { ParentItemCode = "YARI-001", ChildItemCode = "HAMMADDE-001", Quantity = 5, ScrapRate = 0 }
+                    }
+                },
+                new() 
+                { 
+                    Code = "HAMMADDE-001", 
+                    Type = ItemType.RawMaterial, 
+                    OnHand = 0, 
+                    MinOrderQty = 100, 
+                    LeadTimeDays = 7 
+                }
+            },
+            Demands = new List<Demand>
+            {
+                new() { ItemCode = "MAMUL-001", Quantity = 10, DueDate = DateOnly.FromDateTime(DateTime.Today.AddDays(30)), Type = DemandType.Order }
+            }
+        };
+
+        // Act
+        var result = _sut.Calculate(input);
+
+        // Assert - 3 seviyeli patlatma
+        result.Suggestions.Should().HaveCount(3);
+        
+        // MAMUL: 10 adet
+        result.Suggestions.First(s => s.ItemCode == "MAMUL-001").Quantity.Should().Be(10);
+        
+        // YARI: 10 x 2 = 20 adet
+        result.Suggestions.First(s => s.ItemCode == "YARI-001").Quantity.Should().Be(20);
+        
+        // HAMMADDE: 20 x 5 = 100 adet
+        result.Suggestions.First(s => s.ItemCode == "HAMMADDE-001").Quantity.Should().Be(100);
+    }
 }
