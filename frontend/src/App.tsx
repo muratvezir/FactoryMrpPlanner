@@ -4,6 +4,7 @@ import Dashboard from './pages/Dashboard.tsx';
 import Materials from './pages/Materials.tsx';
 import MaterialsDetail from './pages/MaterialsDetail.tsx';
 import Orders from './pages/Orders.tsx';
+import Forecasts from './pages/Forecasts.tsx';
 import Planning from './pages/Planning.tsx';
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
           <Route path="materials" element={<Materials />} />
           <Route path="materials/:code" element={<MaterialsDetail />} />
           <Route path="orders" element={<Orders />} />
+          <Route path="forecasts" element={<Forecasts />} />
           <Route path="planning" element={<Planning />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
