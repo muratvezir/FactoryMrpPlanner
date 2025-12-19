@@ -7,8 +7,8 @@ Yapay zeka destekli, modern ve yüksek performanslı Malzeme İhtiyaç Planlama 
 - **MRP Engine**: Çok seviyeli BOM, Pegging, Lot Sizing, Fire Oranı ve Geriye Dönük Çizelgeleme.
 - **Finite Capacity Planning**: Google OR-Tools ile makine kapasite kısıtlı çizelgeleme.
 - **AI Advisor**: OpenAI (GPT-4) entegrasyonu ile plan risk analizi ve öneriler.
-- **Modern Dashboard**: Next.js 14, Shadcn UI ve Tailwind CSS ile geliştirilmiş arayüz.
-- **Infrastructure**: PostgreSQL veritabanı, Entity Framework Core ve Docker Compose desteği.
+- **Modern Dashboard**: Vite + React, Tailwind CSS v4 ve Lucide Icons ile geliştirilmiş arayüz.
+- **Infrastructure**: SQL Server (veya PostgreSQL) veritabanı, Entity Framework Core ve Docker Compose desteği.
 
 ## 📁 Proje Mimarisi
 
@@ -18,7 +18,7 @@ Yapay zeka destekli, modern ve yüksek performanslı Malzeme İhtiyaç Planlama 
 - `src/Mrp.AI`: Azure OpenAI SDK entegrasyonu.
 - `src/Mrp.Infrastructure`: Veritabanı (EF Core) ve Repository katmanı.
 - `src/Mrp.Api`: ASP.NET Core Web API.
-- `frontend/`: Next.js Web Uygulaması.
+- `frontend/`: Vite + React Web Uygulaması.
 
 ## Veritabanı Yapılandırması
 
