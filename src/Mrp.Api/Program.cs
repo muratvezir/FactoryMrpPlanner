@@ -5,6 +5,14 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// AI Advisor servisi
+builder.Services.AddScoped<Mrp.AI.Services.MrpAdvisor>(sp => 
+    new Mrp.AI.Services.MrpAdvisor(builder.Configuration["OpenAI:ApiKey"] ?? "")
+);
+
+// MRP Engine servisi (stateless olduğu için transient olabilir)
+builder.Services.AddScoped<Mrp.Engine.Services.MrpCalculationService>();
+
 // CORS for Next.js
 builder.Services.AddCors(options =>
 {

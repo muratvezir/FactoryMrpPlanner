@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Mrp.Core.Entities;
 using Mrp.Core.Enums;
 using Mrp.Engine.Services;
+using Mrp.AI.Services;
 
 namespace Mrp.Api.Controllers;
 
@@ -10,10 +11,12 @@ namespace Mrp.Api.Controllers;
 public class PlanningController : ControllerBase
 {
     private readonly MrpCalculationService _mrpService;
+    private readonly MrpAdvisor _advisor;
 
-    public PlanningController()
+    public PlanningController(MrpCalculationService mrpService, MrpAdvisor advisor)
     {
-        _mrpService = new MrpCalculationService();
+        _mrpService = mrpService;
+        _advisor = advisor;
     }
 
     /// <summary>
@@ -30,6 +33,27 @@ public class PlanningController : ControllerBase
             
         var result = _mrpService.Calculate(input);
         return Ok(result);
+    }
+    
+    /// <summary>
+    /// MRP hesaplar ve AI destekli risk analizi yapar.
+    /// </summary>
+    [HttpPost("analyze")]
+    public async Task<IActionResult> Analyze([FromBody] MrpInput input)
+    {
+        if (input.Items == null || !input.Items.Any()) 
+            return BadRequest("En az bir ürün gerekli.");
+            
+        // 1. Planı Hesapla
+        var plan = _mrpService.Calculate(input);
+        
+        // 2. AI Analizi Al
+        var analysis = await _advisor.AnalyzePlanAsync(plan);
+        
+        return Ok(new { 
+            Plan = plan,
+            Analysis = analysis
+        });
     }
     
     /// <summary>

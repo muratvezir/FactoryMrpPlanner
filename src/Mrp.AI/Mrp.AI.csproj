@@ -2,6 +2,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Mrp.Core\Mrp.Core.csproj" />
+    <ProjectReference Include="..\Mrp.Engine\Mrp.Engine.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Azure.AI.OpenAI" Version="1.0.0-beta.17" />
   </ItemGroup>
 
   <PropertyGroup>
