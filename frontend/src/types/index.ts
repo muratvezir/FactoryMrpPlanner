@@ -15,6 +15,7 @@ export interface Item {
     minOrderQty: number;
     safetyStock: number;
     lowLevelCode: number;
+    billOfMaterials?: BomLine[];
 }
 
 export interface BomLine {
@@ -23,4 +24,20 @@ export interface BomLine {
     childItemCode: string;
     quantity: number;
     scrapRate: number;
+}
+
+export const DemandType = {
+    Order: 0,
+    Forecast: 1
+} as const;
+
+export type DemandType = typeof DemandType[keyof typeof DemandType];
+
+export interface Demand {
+    id?: number;
+    itemCode: string;
+    dueDate: string;
+    quantity: number;
+    type: DemandType;
+    sourceId?: string;
 }

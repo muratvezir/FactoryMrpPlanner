@@ -1,5 +1,5 @@
 import { Link, useLocation, Outlet } from 'react-router-dom';
-import { LayoutDashboard, Package, CalendarClock, Settings, Menu, X } from 'lucide-react';
+import { LayoutDashboard, Package, CalendarClock, Settings, Menu, X, ShoppingCart } from 'lucide-react';
 import { useState } from 'react';
 import clsx from 'clsx';
 
@@ -10,6 +10,7 @@ export default function MainLayout() {
   const navigation = [
     { name: 'Dashboard', href: '/', icon: LayoutDashboard },
     { name: 'Malzemeler', href: '/materials', icon: Package },
+    { name: 'Siparişler', href: '/orders', icon: ShoppingCart },
     { name: 'Planlama', href: '/planning', icon: CalendarClock },
     { name: 'Ayarlar', href: '/settings', icon: Settings },
   ];

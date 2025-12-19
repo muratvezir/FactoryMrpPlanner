@@ -26,7 +26,10 @@ public class MaterialsController : ControllerBase
     [HttpGet("{code}")]
     public async Task<ActionResult<Item>> GetByCode(string code)
     {
-        var item = await _context.Items.FirstOrDefaultAsync(i => i.Code == code);
+        var item = await _context.Items
+            .Include(i => i.BillOfMaterials)
+            .FirstOrDefaultAsync(i => i.Code == code);
+
         if (item == null) return NotFound();
         return Ok(item);
     }
