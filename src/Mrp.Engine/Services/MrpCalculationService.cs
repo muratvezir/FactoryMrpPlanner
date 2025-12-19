@@ -57,6 +57,18 @@ public class MrpCalculationService
                     });
                 }
                 
+                // Stok yetersizliği uyarısı (kritik eksiklik - stok sıfır ve yüksek talep)
+                if (item.OnHand == 0 && netQty > item.MinOrderQty * 3)
+                {
+                    exceptions.Add(new PlanningException
+                    {
+                        ItemCode = itemCode,
+                        Type = ExceptionType.Shortage,
+                        Message = $"Kritik stok yetersizliği: {netQty} adet gerekli, stok sıfır",
+                        AffectedDate = dueDate
+                    });
+                }
+                
                 // Öneri oluştur
                 var action = item.Type == ItemType.RawMaterial ? ActionType.Buy : ActionType.Make;
                 suggestions.Add(new Suggestion
