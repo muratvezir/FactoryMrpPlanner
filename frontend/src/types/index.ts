@@ -41,3 +41,47 @@ export interface Demand {
     type: DemandType;
     sourceId?: string;
 }
+
+export const ActionType = {
+    Make: 0,
+    Buy: 1
+} as const;
+
+export type ActionType = typeof ActionType[keyof typeof ActionType];
+
+export const ExceptionType = {
+    Shortage: 0,
+    LateDemand: 1,
+    CapacityOverflow: 2
+} as const;
+
+export type ExceptionType = typeof ExceptionType[keyof typeof ExceptionType];
+
+export interface Suggestion {
+    id: number;
+    itemCode: string;
+    action: ActionType;
+    startDate: string;
+    endDate: string;
+    quantity: number;
+    peggingInfo: string;
+}
+
+export interface PlanningException {
+    itemCode: string;
+    type: ExceptionType;
+    message: string;
+    affectedDate?: string;
+}
+
+export interface MrpInput {
+    items: Item[];
+    demands: Demand[];
+}
+
+export interface MrpResult {
+    planId: string;
+    generatedAt: string;
+    suggestions: Suggestion[];
+    exceptions: PlanningException[];
+}

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { Item, ItemType } from '../types';
 import { Plus, Search, Filter } from 'lucide-react';
@@ -88,11 +89,7 @@ export default function Materials() {
                 ) : (
                     items.map((item) => (
                     <tr key={item.id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <Link to={`/materials/${item.code}`} className="text-blue-600 hover:text-blue-900 hover:underline">
-                                {item.code}
-                            </Link>
-                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.code}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm">
                             <span className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ${getItemTypeBadgeColor(item.type)}`}>
                                 {getItemTypeName(item.type)}
