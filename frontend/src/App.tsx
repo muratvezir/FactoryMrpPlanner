@@ -1,10 +1,10 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import MainLayout from './layouts/MainLayout';
-import Dashboard from './pages/Dashboard';
-import Materials from './pages/Materials';
-import MaterialsDetail from './pages/MaterialsDetail';
-import Orders from './pages/Orders';
-import Planning from './pages/Planning';
+import MainLayout from './layouts/MainLayout.tsx';
+import Dashboard from './pages/Dashboard.tsx';
+import Materials from './pages/Materials.tsx';
+import MaterialsDetail from './pages/MaterialsDetail.tsx';
+import Orders from './pages/Orders.tsx';
+import Planning from './pages/Planning.tsx';
 
 function App() {
   return (
